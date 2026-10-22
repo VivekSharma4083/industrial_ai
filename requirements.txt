@@ -1,8 +1,9 @@
 # Extra wheel index for CPU-only PyTorch builds
 --extra-index-url https://download.pytorch.org/whl/cpu
 
-# Core Web Framework
+# Core Web Framework & Production WSGI
 Flask>=3.0.0,<3.1.0
+gunicorn>=22.0.0
 
 # Image Processing & Utilities
 Pillow>=10.3.0,<11.0.0

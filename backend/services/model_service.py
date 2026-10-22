@@ -21,6 +21,7 @@ from datetime import datetime, timezone
 import io
 import json
 import logging
+import os
 from pathlib import Path
 import threading
 import time
@@ -44,11 +45,38 @@ logger = logging.getLogger(__name__)
 
 # Canonical project paths
 PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
-RECON_CHECKPOINT_PATH = PROJECT_ROOT / "artifacts" / "checkpoints" / "reconstruction_bottle.pth"
-PATCHCORE_CHECKPOINT_PATH = PROJECT_ROOT / "artifacts" / "checkpoints" / "patchcore_bottle.pth"
+RECON_CHECKPOINT_PATH = Path(
+    os.environ.get("RECON_CHECKPOINT_PATH", PROJECT_ROOT / "artifacts" / "checkpoints" / "reconstruction_bottle.pth")
+)
+PATCHCORE_CHECKPOINT_PATH = Path(
+    os.environ.get("PATCHCORE_CHECKPOINT_PATH", PROJECT_ROOT / "artifacts" / "checkpoints" / "patchcore_bottle.pth")
+)
 EVAL_SUMMARY_RECON_PATH = PROJECT_ROOT / "artifacts" / "eval_results" / "evaluation_summary.json"
 EVAL_SUMMARY_PATCHCORE_PATH = PROJECT_ROOT / "artifacts" / "eval_results" / "patchcore_summary.json"
 DATASET_ROOT = PROJECT_ROOT / "data" / "mvtec_anomaly_detection" / "bottle"
+FRONTEND_SAMPLES_DIR = PROJECT_ROOT / "frontend" / "assets" / "samples"
+
+
+def _ensure_checkpoint(path: Path, url_env_var: str) -> Path:
+    """
+    Ensure checkpoint exists on disk. If absent and a remote URL is configured
+    via environment variable, download and cache it on startup.
+    """
+    if path.is_file():
+        return path
+
+    url = os.environ.get(url_env_var, "").strip()
+    if url:
+        try:
+            logger.info("Downloading checkpoint from %s to %s...", url, path)
+            path.parent.mkdir(parents=True, exist_ok=True)
+            import urllib.request
+            urllib.request.urlretrieve(url, path)
+            logger.info("Successfully downloaded checkpoint to %s", path)
+        except Exception as exc:
+            logger.error("Failed to download checkpoint from %s: %s", url, exc)
+    return path
+
 
 # Calibrated decision thresholds
 THRESHOLDS = {
@@ -154,8 +182,12 @@ class ModelService:
         """Load both models from disk checkpoints into CPU memory."""
         # 1. Feature Reconstruction Model
         try:
+            _ensure_checkpoint(RECON_CHECKPOINT_PATH, "RECON_CHECKPOINT_URL")
             if not RECON_CHECKPOINT_PATH.is_file():
-                raise FileNotFoundError(f"Reconstruction checkpoint missing: {RECON_CHECKPOINT_PATH}")
+                raise FileNotFoundError(
+                    f"Reconstruction checkpoint missing: '{RECON_CHECKPOINT_PATH}'. "
+                    f"Set RECON_CHECKPOINT_PATH or RECON_CHECKPOINT_URL environment variable."
+                )
 
             recon_extractor = ResNetFeatureExtractor(
                 layer_name="layer2",
@@ -184,12 +216,22 @@ class ModelService:
 
         # 2. PatchCore Model
         try:
+            _ensure_checkpoint(PATCHCORE_CHECKPOINT_PATH, "PATCHCORE_CHECKPOINT_URL")
             if not PATCHCORE_CHECKPOINT_PATH.is_file():
-                raise FileNotFoundError(f"PatchCore checkpoint missing: {PATCHCORE_CHECKPOINT_PATH}")
+                raise FileNotFoundError(
+                    f"PatchCore checkpoint missing: '{PATCHCORE_CHECKPOINT_PATH}'. "
+                    f"Set PATCHCORE_CHECKPOINT_PATH or PATCHCORE_CHECKPOINT_URL environment variable."
+                )
+
+            # Conserve memory on Render Free Tier (512 MB limit) by sharing the frozen ResNet50 backbone
+            shared_backbone = None
+            if self.recon_detector is not None and self.recon_detector.feature_extractor is not None:
+                shared_backbone = self.recon_detector.feature_extractor.backbone
 
             patch_extractor = PatchEmbeddingExtractor(
                 layers=("layer2", "layer3"),
-                pretrained=True,
+                pretrained=True if shared_backbone is None else False,
+                backbone=shared_backbone,
                 device=self.device,
             )
             config = PatchCoreConfig(
@@ -580,6 +622,11 @@ class ModelService:
         result = []
         for p in presets:
             file_path: Path = p["path"]
+            if not file_path.is_file():
+                fallback_path = FRONTEND_SAMPLES_DIR / f"{p['id']}.png"
+                if fallback_path.is_file():
+                    file_path = fallback_path
+
             thumb_b64 = None
             available = file_path.is_file()
 
@@ -615,6 +662,11 @@ class ModelService:
             return None
 
         path, filename = mapping[sample_id]
+        if not path.is_file():
+            fallback_path = FRONTEND_SAMPLES_DIR / f"{sample_id}.png"
+            if fallback_path.is_file():
+                path = fallback_path
+
         if not path.is_file():
             return None
 

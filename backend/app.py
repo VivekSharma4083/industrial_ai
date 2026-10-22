@@ -73,11 +73,14 @@ def create_app(config: dict | None = None) -> Flask:
     return app
 
 
+# Expose application instance for WSGI production servers (e.g., Gunicorn on Render)
+app = create_app()
+
+
 if __name__ == "__main__":
-    host = os.environ.get("HOST", "127.0.0.1")
+    host = os.environ.get("HOST", "0.0.0.0")
     port = int(os.environ.get("PORT", 5000))
     debug = os.environ.get("FLASK_DEBUG", "False").lower() in ("true", "1", "yes")
 
-    application = create_app()
     print(f"[*] Starting Industrial AI Inspector server on http://{host}:{port}")
-    application.run(host=host, port=port, debug=debug)
+    app.run(host=host, port=port, debug=debug)

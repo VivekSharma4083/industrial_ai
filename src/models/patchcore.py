@@ -62,6 +62,7 @@ class PatchEmbeddingExtractor(nn.Module):
         self,
         layers: Sequence[str] = ("layer2", "layer3"),
         pretrained: bool = True,
+        backbone: Optional[nn.Module] = None,
         device: Union[str, torch.device] = "cpu",
         image_size: Tuple[int, int] = (224, 224),
         target_spatial_size: Tuple[int, int] = (28, 28),
@@ -83,8 +84,10 @@ class PatchEmbeddingExtractor(nn.Module):
 
         self.embedding_dim = sum(known_layers[l] for l in self.layers)
 
-        # Load ResNet-50 backbone
-        if pretrained:
+        # Load or reuse ResNet-50 backbone
+        if backbone is not None:
+            self.backbone = backbone
+        elif pretrained:
             self.backbone = resnet50(weights=ResNet50_Weights.DEFAULT)
         else:
             self.backbone = resnet50(weights=None)

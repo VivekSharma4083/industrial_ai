@@ -62,10 +62,15 @@ artifacts/*
 !artifacts/.gitkeep
 !artifacts/eval_results/
 !artifacts/eval_results/**
+!artifacts/checkpoints/
+!artifacts/checkpoints/reconstruction_bottle.pth
+!artifacts/checkpoints/patchcore_bottle.pth
 *.pth
+!artifacts/checkpoints/reconstruction_bottle.pth
+!artifacts/checkpoints/patchcore_bottle.pth
 *.pt
 *.onnx
 *.pkl
 *.h5
-checkpoints/
-logs/
+/checkpoints/
+/logs/
