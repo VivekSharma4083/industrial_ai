@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Industrial AI Inspector: Explainable Visual Anomaly Detection">
+    <title>Industrial AI Inspector | Anomaly Detection</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <header class="app-header">
+        <div class="header-container">
+            <div class="brand">
+                <div class="brand-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+                        <polyline points="2 17 12 22 22 17"></polyline>
+                        <polyline points="2 12 12 17 22 12"></polyline>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="brand-title">INDUSTRIAL AI INSPECTOR</h1>
+                    <p class="brand-subtitle">Explainable Visual Anomaly Detection for Manufacturing QA</p>
+                </div>
+            </div>
+            <div class="status-indicator">
+                <span class="status-dot status-unknown" id="status-dot"></span>
+                <span class="status-text" id="status-label">Checking Backend...</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <!-- Diagnostic Overview Card -->
+        <section class="card diagnostics-panel">
+            <div class="card-header">
+                <h2>System Pre-Flight Status</h2>
+                <button id="btn-check-health" class="btn btn-secondary">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M23 4v6h-6"></path>
+                        <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+                    </svg>
+                    Poll Backend Health
+                </button>
+            </div>
+            <div class="grid-stats">
+                <div class="stat-box">
+                    <span class="stat-label">System State</span>
+                    <span class="stat-value" id="stat-status">Connecting...</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-label">Python Environment</span>
+                    <span class="stat-value" id="stat-python">Checking...</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-label">Platform Host</span>
+                    <span class="stat-value" id="stat-platform">Checking...</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-label">Active Phase</span>
+                    <span class="stat-value" id="stat-phase">Phase 1</span>
+                </div>
+            </div>
+
+            <div class="console-wrapper">
+                <div class="console-header">
+                    <span>API Response Log (GET /api/health)</span>
+                    <span class="console-timestamp" id="response-timestamp">--:--:--</span>
+                </div>
+                <pre class="console-body" id="console-output">Awaiting health check...</pre>
+            </div>
+        </section>
+
+        <!-- Project Roadmap / Architectural Overview -->
+        <section class="card roadmap-panel">
+            <div class="card-header">
+                <h2>Development Milestones</h2>
+                <span class="badge badge-accent">Phase 1 Complete</span>
+            </div>
+            <div class="milestone-list">
+                <div class="milestone-item active">
+                    <div class="milestone-step">01</div>
+                    <div class="milestone-info">
+                        <h3>Environment & Architecture Skeleton</h3>
+                        <p>Project scaffolding, virtual environment isolation, Flask REST server, Vanilla HTML/CSS/JS frontend, and test suite.</p>
+                    </div>
+                    <span class="milestone-tag">Ready</span>
+                </div>
+
+                <div class="milestone-item">
+                    <div class="milestone-step">02</div>
+                    <div class="milestone-info">
+                        <h3>Dataset Ingestion & Preprocessing</h3>
+                        <p>MVTec AD category loader, resolution standardization (224x224), normal-only training splits, and validation masks.</p>
+                    </div>
+                    <span class="milestone-tag pending">Upcoming</span>
+                </div>
+
+                <div class="milestone-item">
+                    <div class="milestone-step">03</div>
+                    <div class="milestone-info">
+                        <h3>Feature Reconstruction Engine</h3>
+                        <p>ResNet50 multi-scale feature extractor and spatial autoencoder trained to reconstruct defect-free feature maps.</p>
+                    </div>
+                    <span class="milestone-tag pending">Upcoming</span>
+                </div>
+
+                <div class="milestone-item">
+                    <div class="milestone-step">04</div>
+                    <div class="milestone-info">
+                        <h3>PatchCore Baseline & Heatmap Generator</h3>
+                        <p>Memory bank with greedy coreset subsampling, cosine anomaly scoring, and Gaussian-smoothed pixel heatmaps.</p>
+                    </div>
+                    <span class="milestone-tag pending">Upcoming</span>
+                </div>
+
+                <div class="milestone-item">
+                    <div class="milestone-step">05</div>
+                    <div class="milestone-info">
+                        <h3>Evaluation & Anomaly Localization Metrics</h3>
+                        <p>Rigorous image-level ROC-AUC, pixel-level PRO-AUC, precision-recall thresholds, and model comparison.</p>
+                    </div>
+                    <span class="milestone-tag pending">Upcoming</span>
+                </div>
+
+                <div class="milestone-item">
+                    <div class="milestone-step">06</div>
+                    <div class="milestone-info">
+                        <h3>Interactive QA Dashboard</h3>
+                        <p>End-to-end defect inspection interface with side-by-side original, anomaly heatmaps, and severity thresholds.</p>
+                    </div>
+                    <span class="milestone-tag pending">Upcoming</span>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="app-footer">
+        <p>Industrial AI Inspector &bull; Visual Anomaly Detection System &bull; Placement-Grade ML Architecture</p>
+    </footer>
+
+    <script src="/js/app.js"></script>
+</body>
+</html>

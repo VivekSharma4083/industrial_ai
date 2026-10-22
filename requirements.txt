@@ -1,0 +1,12 @@
+# Core Web Framework
+Flask>=3.0.0,<3.1.0
+
+# Image Processing (Initial lightweight setup)
+Pillow>=10.3.0,<11.0.0
+
+# Testing
+pytest>=8.0.0,<9.0.0
+
+# Note on Machine Learning Dependencies:
+# PyTorch, torchvision, NumPy, scikit-learn, and scipy will be introduced in subsequent phases
+# tailored specifically to verified target hardware (CPU vs CUDA) to conserve disk space and bandwidth.
