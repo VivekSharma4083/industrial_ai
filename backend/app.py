@@ -7,8 +7,16 @@ Serves the Vanilla HTML/CSS/JS frontend and REST API endpoints from the same ori
 
 import os
 from pathlib import Path
+import sys
+
+# Ensure repository root is on sys.path for direct execution (python backend/app.py)
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+
 from flask import Flask, send_from_directory, jsonify
 from backend.routes.health import health_bp
+from backend.routes.inspect import inspect_bp
 
 
 def create_app(config: dict | None = None) -> Flask:
@@ -27,11 +35,15 @@ def create_app(config: dict | None = None) -> Flask:
         static_url_path="",
     )
 
+    # 10 MB upload ceiling
+    app.config["MAX_CONTENT_LENGTH"] = 10 * 1024 * 1024
+
     if config:
         app.config.update(config)
 
     # Register API blueprints
     app.register_blueprint(health_bp, url_prefix="/api")
+    app.register_blueprint(inspect_bp, url_prefix="/api")
 
     # Serve the single-page industrial interface
     @app.route("/")
@@ -49,6 +61,10 @@ def create_app(config: dict | None = None) -> Flask:
     @app.errorhandler(404)
     def handle_not_found(error):
         return jsonify({"error": "Endpoint or resource not found", "status_code": 404}), 404
+
+    @app.errorhandler(413)
+    def handle_large_file(error):
+        return jsonify({"error": "File size exceeds the 10 MB maximum limit.", "status_code": 413}), 413
 
     @app.errorhandler(500)
     def handle_server_error(error):

@@ -1,0 +1,612 @@
+{
+  "category": "bottle",
+  "checkpoint": "artifacts/checkpoints/reconstruction_bottle.pth",
+  "feature_layer": "layer2",
+  "score_aggregation": "max",
+  "device": "cpu",
+  "image_level": {
+    "roc_auc": 0.9968,
+    "best_threshold": 23.669775,
+    "precision": 1.0,
+    "recall": 0.9524,
+    "f1_score": 0.9756,
+    "accuracy": 0.9639,
+    "confusion_matrix": {
+      "TP": 60,
+      "FP": 0,
+      "TN": 20,
+      "FN": 3
+    },
+    "counts": {
+      "total": 83,
+      "anomalies": 63,
+      "normals": 20
+    }
+  },
+  "pixel_level": {
+    "pixel_roc_auc": 0.9641,
+    "total_pixels": 4164608,
+    "defect_pixels": 240575,
+    "normal_pixels": 3924033,
+    "defect_pixel_ratio": 0.057767
+  },
+  "defect_breakdown": {
+    "broken_large": {
+      "defect_name": "broken_large",
+      "count": 20,
+      "mean_score": 27.38466,
+      "std_score": 0.793401,
+      "min_score": 25.87233,
+      "max_score": 28.642551,
+      "p50_score": 27.411714
+    },
+    "broken_small": {
+      "defect_name": "broken_small",
+      "count": 22,
+      "mean_score": 27.168019,
+      "std_score": 1.051686,
+      "min_score": 25.109962,
+      "max_score": 28.832523,
+      "p50_score": 27.135207
+    },
+    "contamination": {
+      "defect_name": "contamination",
+      "count": 21,
+      "mean_score": 26.339757,
+      "std_score": 2.769081,
+      "min_score": 23.091213,
+      "max_score": 33.10413,
+      "p50_score": 25.979111
+    },
+    "good": {
+      "defect_name": "good",
+      "count": 20,
+      "mean_score": 22.660965,
+      "std_score": 0.36082,
+      "min_score": 21.864767,
+      "max_score": 23.394352,
+      "p50_score": 22.738587
+    }
+  },
+  "threshold_analysis": {
+    "youden_j_test_tuned": {
+      "threshold": 23.669775,
+      "is_test_tuned": true,
+      "precision": 1.0,
+      "recall": 0.9524,
+      "f1_score": 0.9756,
+      "false_negatives": 3,
+      "false_positives": 0
+    },
+    "unsupervised_train_99th_pct": {
+      "threshold": 23.7207,
+      "is_test_tuned": false,
+      "precision": 1.0,
+      "recall": 0.9365,
+      "f1_score": 0.9672,
+      "false_negatives": 4,
+      "false_positives": 0
+    },
+    "unsupervised_train_3sigma": {
+      "threshold": 23.8762,
+      "is_test_tuned": false,
+      "precision": 1.0,
+      "recall": 0.9048,
+      "f1_score": 0.95,
+      "false_negatives": 6,
+      "false_positives": 0
+    }
+  },
+  "latency_benchmark": {
+    "device": "cpu",
+    "warmup_runs": 5,
+    "timed_runs": 30,
+    "mean_ms": 160.18,
+    "std_ms": 13.54,
+    "min_ms": 150.91,
+    "max_ms": 227.15,
+    "p50_ms": 156.76,
+    "p95_ms": 173.53,
+    "throughput_fps": 6.24
+  },
+  "sample_scores": [
+    {
+      "image_path": "C:\\Users\\HP\\Downloads\\indus_ai\\data\\mvtec_anomaly_detection\\bottle\\test\\broken_large\\000.png",
+      "label_name": "broken_large",
+      "is_anomaly": true,
+      "score": 27.58039665222168
+    },
+    {
+      "image_path": "C:\\Users\\HP\\Downloads\\indus_ai\\data\\mvtec_anomaly_detection\\bottle\\test\\broken_large\\001.png",
+      "label_name": "broken_large",
+      "is_anomaly": true,
+      "score": 27.414398193359375
+    },
+    {
+      "image_path": "C:\\Users\\HP\\Downloads\\indus_ai\\data\\mvtec_anomaly_detection\\bottle\\test\\broken_large\\002.png",
+      "label_name": "broken_large",
+      "is_anomaly": true,
+      "score": 26.870559692382812
+    },
+    {
+      "image_path": "C:\\Users\\HP\\Downloads\\indus_ai\\data\\mvtec_anomaly_detection\\bottle\\test\\broken_large\\003.png",
+      "label_name": "broken_large",
+      "is_anomaly": true,
+      "score": 28.605133056640625
+    },
+    {
+      "image_path": "C:\\Users\\HP\\Downloads\\indus_ai\\data\\mvtec_anomaly_detection\\bottle\\test\\broken_large\\004.png",
+      "label_name": "broken_large",
+      "is_anomaly": true,
+      "score": 28.64255142211914
+    },
+    {
+      "image_path": "C:\\Users\\HP\\Downloads\\indus_ai\\data\\mvtec_anomaly_detection\\bottle\\test\\broken_large\\005.png",
+      "label_name": "broken_large",
+      "is_anomaly": true,
+      "score": 27.409029006958008
+    },
+    {
+      "image_path": "C:\\Users\\HP\\Downloads\\indus_ai\\data\\mvtec_anomaly_detection\\bottle\\test\\broken_large\\006.png",
+      "label_name": "broken_large",
+      "is_anomaly": true,
+      "score": 28.51720428466797
+    },
+    {
+      "image_path": "C:\\Users\\HP\\Downloads\\indus_ai\\data\\mvtec_anomaly_detection\\bottle\\test\\broken_large\\007.png",
+      "label_name": "broken_large",
+      "is_anomaly": true,
+      "score": 25.872329711914062
+    },
+    {
+      "image_path": "C:\\Users\\HP\\Downloads\\indus_ai\\data\\mvtec_anomaly_detection\\bottle\\test\\broken_large\\008.png",
+      "label_name": "broken_large",
+      "is_anomaly": true,
+      "score": 27.833303451538086
+    },
+    {
+      "image_path": "C:\\Users\\HP\\Downloads\\indus_ai\\data\\mvtec_anomaly_detection\\bottle\\test\\broken_large\\009.png",
+      "label_name": "broken_large",
+      "is_anomaly": true,
+      "score": 26.20807456970215
+    },
+    {
+      "image_path": "C:\\Users\\HP\\Downloads\\indus_ai\\data\\mvtec_anomaly_detection\\bottle\\test\\broken_large\\010.png",
+      "label_name": "broken_large",
+      "is_anomaly": true,
+      "score": 27.81747055053711
+    },
+    {
+      "image_path": "C:\\Users\\HP\\Downloads\\indus_ai\\data\\mvtec_anomaly_detection\\bottle\\test\\broken_large\\011.png",
+      "label_name": "broken_large",
+      "is_anomaly": true,
+      "score": 26.13992691040039
+    },
+    {
+      "image_path": "C:\\Users\\HP\\Downloads\\indus_ai\\data\\mvtec_anomaly_detection\\bottle\\test\\broken_large\\012.png",
+      "label_name": "broken_large",
+      "is_anomaly": true,
+      "score": 27.719623565673828
+    },
+    {
+      "image_path": "C:\\Users\\HP\\Downloads\\indus_ai\\data\\mvtec_anomaly_detection\\bottle\\test\\broken_large\\013.png",
+      "label_name": "broken_large",
+      "is_anomaly": true,
+      "score": 27.176130294799805
+    },
+    {
+      "image_path": "C:\\Users\\HP\\Downloads\\indus_ai\\data\\mvtec_anomaly_detection\\bottle\\test\\broken_large\\014.png",
+      "label_name": "broken_large",
+      "is_anomaly": true,
+      "score": 27.22073745727539
+    },
+    {
+      "image_path": "C:\\Users\\HP\\Downloads\\indus_ai\\data\\mvtec_anomaly_detection\\bottle\\test\\broken_large\\015.png",
+      "label_name": "broken_large",
+      "is_anomaly": true,
+      "score": 26.683130264282227
+    },
+    {
+      "image_path": "C:\\Users\\HP\\Downloads\\indus_ai\\data\\mvtec_anomaly_detection\\bottle\\test\\broken_large\\016.png",
+      "label_name": "broken_large",
+      "is_anomaly": true,
+      "score": 28.41401481628418
+    },
+    {
+      "image_path": "C:\\Users\\HP\\Downloads\\indus_ai\\data\\mvtec_anomaly_detection\\bottle\\test\\broken_large\\017.png",
+      "label_name": "broken_large",
+      "is_anomaly": true,
+      "score": 27.07399559020996
+    },
+    {
+      "image_path": "C:\\Users\\HP\\Downloads\\indus_ai\\data\\mvtec_anomaly_detection\\bottle\\test\\broken_large\\018.png",
+      "label_name": "broken_large",
+      "is_anomaly": true,
+      "score": 27.72367286682129
+    },
+    {
+      "image_path": "C:\\Users\\HP\\Downloads\\indus_ai\\data\\mvtec_anomaly_detection\\bottle\\test\\broken_large\\019.png",
+      "label_name": "broken_large",
+      "is_anomaly": true,
+      "score": 26.771520614624023
+    },
+    {
+      "image_path": "C:\\Users\\HP\\Downloads\\indus_ai\\data\\mvtec_anomaly_detection\\bottle\\test\\broken_small\\000.png",
+      "label_name": "broken_small",
+      "is_anomaly": true,
+      "score": 25.109962463378906
+    },
+    {
+      "image_path": "C:\\Users\\HP\\Downloads\\indus_ai\\data\\mvtec_anomaly_detection\\bottle\\test\\broken_small\\001.png",
+      "label_name": "broken_small",
+      "is_anomaly": true,
+      "score": 28.136133193969727
+    },
+    {
+      "image_path": "C:\\Users\\HP\\Downloads\\indus_ai\\data\\mvtec_anomaly_detection\\bottle\\test\\broken_small\\002.png",
+      "label_name": "broken_small",
+      "is_anomaly": true,
+      "score": 28.174779891967773
+    },
+    {
+      "image_path": "C:\\Users\\HP\\Downloads\\indus_ai\\data\\mvtec_anomaly_detection\\bottle\\test\\broken_small\\003.png",
+      "label_name": "broken_small",
+      "is_anomaly": true,
+      "score": 27.965444564819336
+    },
+    {
+      "image_path": "C:\\Users\\HP\\Downloads\\indus_ai\\data\\mvtec_anomaly_detection\\bottle\\test\\broken_small\\004.png",
+      "label_name": "broken_small",
+      "is_anomaly": true,
+      "score": 28.832523345947266
+    },
+    {
+      "image_path": "C:\\Users\\HP\\Downloads\\indus_ai\\data\\mvtec_anomaly_detection\\bottle\\test\\broken_small\\005.png",
+      "label_name": "broken_small",
+      "is_anomaly": true,
+      "score": 25.869522094726562
+    },
+    {
+      "image_path": "C:\\Users\\HP\\Downloads\\indus_ai\\data\\mvtec_anomaly_detection\\bottle\\test\\broken_small\\006.png",
+      "label_name": "broken_small",
+      "is_anomaly": true,
+      "score": 27.149290084838867
+    },
+    {
+      "image_path": "C:\\Users\\HP\\Downloads\\indus_ai\\data\\mvtec_anomaly_detection\\bottle\\test\\broken_small\\007.png",
+      "label_name": "broken_small",
+      "is_anomaly": true,
+      "score": 26.793832778930664
+    },
+    {
+      "image_path": "C:\\Users\\HP\\Downloads\\indus_ai\\data\\mvtec_anomaly_detection\\bottle\\test\\broken_small\\008.png",
+      "label_name": "broken_small",
+      "is_anomaly": true,
+      "score": 26.64173126220703
+    },
+    {
+      "image_path": "C:\\Users\\HP\\Downloads\\indus_ai\\data\\mvtec_anomaly_detection\\bottle\\test\\broken_small\\009.png",
+      "label_name": "broken_small",
+      "is_anomaly": true,
+      "score": 26.743797302246094
+    },
+    {
+      "image_path": "C:\\Users\\HP\\Downloads\\indus_ai\\data\\mvtec_anomaly_detection\\bottle\\test\\broken_small\\010.png",
+      "label_name": "broken_small",
+      "is_anomaly": true,
+      "score": 27.94052505493164
+    },
+    {
+      "image_path": "C:\\Users\\HP\\Downloads\\indus_ai\\data\\mvtec_anomaly_detection\\bottle\\test\\broken_small\\011.png",
+      "label_name": "broken_small",
+      "is_anomaly": true,
+      "score": 26.708934783935547
+    },
+    {
+      "image_path": "C:\\Users\\HP\\Downloads\\indus_ai\\data\\mvtec_anomaly_detection\\bottle\\test\\broken_small\\012.png",
+      "label_name": "broken_small",
+      "is_anomaly": true,
+      "score": 27.957155227661133
+    },
+    {
+      "image_path": "C:\\Users\\HP\\Downloads\\indus_ai\\data\\mvtec_anomaly_detection\\bottle\\test\\broken_small\\013.png",
+      "label_name": "broken_small",
+      "is_anomaly": true,
+      "score": 25.612499237060547
+    },
+    {
+      "image_path": "C:\\Users\\HP\\Downloads\\indus_ai\\data\\mvtec_anomaly_detection\\bottle\\test\\broken_small\\014.png",
+      "label_name": "broken_small",
+      "is_anomaly": true,
+      "score": 25.900390625
+    },
+    {
+      "image_path": "C:\\Users\\HP\\Downloads\\indus_ai\\data\\mvtec_anomaly_detection\\bottle\\test\\broken_small\\015.png",
+      "label_name": "broken_small",
+      "is_anomaly": true,
+      "score": 25.58842658996582
+    },
+    {
+      "image_path": "C:\\Users\\HP\\Downloads\\indus_ai\\data\\mvtec_anomaly_detection\\bottle\\test\\broken_small\\016.png",
+      "label_name": "broken_small",
+      "is_anomaly": true,
+      "score": 26.97311019897461
+    },
+    {
+      "image_path": "C:\\Users\\HP\\Downloads\\indus_ai\\data\\mvtec_anomaly_detection\\bottle\\test\\broken_small\\017.png",
+      "label_name": "broken_small",
+      "is_anomaly": true,
+      "score": 27.47028160095215
+    },
+    {
+      "image_path": "C:\\Users\\HP\\Downloads\\indus_ai\\data\\mvtec_anomaly_detection\\bottle\\test\\broken_small\\018.png",
+      "label_name": "broken_small",
+      "is_anomaly": true,
+      "score": 28.676509857177734
+    },
+    {
+      "image_path": "C:\\Users\\HP\\Downloads\\indus_ai\\data\\mvtec_anomaly_detection\\bottle\\test\\broken_small\\019.png",
+      "label_name": "broken_small",
+      "is_anomaly": true,
+      "score": 27.121124267578125
+    },
+    {
+      "image_path": "C:\\Users\\HP\\Downloads\\indus_ai\\data\\mvtec_anomaly_detection\\bottle\\test\\broken_small\\020.png",
+      "label_name": "broken_small",
+      "is_anomaly": true,
+      "score": 28.39850616455078
+    },
+    {
+      "image_path": "C:\\Users\\HP\\Downloads\\indus_ai\\data\\mvtec_anomaly_detection\\bottle\\test\\broken_small\\021.png",
+      "label_name": "broken_small",
+      "is_anomaly": true,
+      "score": 27.931941986083984
+    },
+    {
+      "image_path": "C:\\Users\\HP\\Downloads\\indus_ai\\data\\mvtec_anomaly_detection\\bottle\\test\\contamination\\000.png",
+      "label_name": "contamination",
+      "is_anomaly": true,
+      "score": 25.466777801513672
+    },
+    {
+      "image_path": "C:\\Users\\HP\\Downloads\\indus_ai\\data\\mvtec_anomaly_detection\\bottle\\test\\contamination\\001.png",
+      "label_name": "contamination",
+      "is_anomaly": true,
+      "score": 23.09121322631836
+    },
+    {
+      "image_path": "C:\\Users\\HP\\Downloads\\indus_ai\\data\\mvtec_anomaly_detection\\bottle\\test\\contamination\\002.png",
+      "label_name": "contamination",
+      "is_anomaly": true,
+      "score": 24.6429500579834
+    },
+    {
+      "image_path": "C:\\Users\\HP\\Downloads\\indus_ai\\data\\mvtec_anomaly_detection\\bottle\\test\\contamination\\003.png",
+      "label_name": "contamination",
+      "is_anomaly": true,
+      "score": 23.727333068847656
+    },
+    {
+      "image_path": "C:\\Users\\HP\\Downloads\\indus_ai\\data\\mvtec_anomaly_detection\\bottle\\test\\contamination\\004.png",
+      "label_name": "contamination",
+      "is_anomaly": true,
+      "score": 25.077960968017578
+    },
+    {
+      "image_path": "C:\\Users\\HP\\Downloads\\indus_ai\\data\\mvtec_anomaly_detection\\bottle\\test\\contamination\\005.png",
+      "label_name": "contamination",
+      "is_anomaly": true,
+      "score": 29.253793716430664
+    },
+    {
+      "image_path": "C:\\Users\\HP\\Downloads\\indus_ai\\data\\mvtec_anomaly_detection\\bottle\\test\\contamination\\006.png",
+      "label_name": "contamination",
+      "is_anomaly": true,
+      "score": 26.046281814575195
+    },
+    {
+      "image_path": "C:\\Users\\HP\\Downloads\\indus_ai\\data\\mvtec_anomaly_detection\\bottle\\test\\contamination\\007.png",
+      "label_name": "contamination",
+      "is_anomaly": true,
+      "score": 33.104129791259766
+    },
+    {
+      "image_path": "C:\\Users\\HP\\Downloads\\indus_ai\\data\\mvtec_anomaly_detection\\bottle\\test\\contamination\\008.png",
+      "label_name": "contamination",
+      "is_anomaly": true,
+      "score": 25.979110717773438
+    },
+    {
+      "image_path": "C:\\Users\\HP\\Downloads\\indus_ai\\data\\mvtec_anomaly_detection\\bottle\\test\\contamination\\009.png",
+      "label_name": "contamination",
+      "is_anomaly": true,
+      "score": 26.970216751098633
+    },
+    {
+      "image_path": "C:\\Users\\HP\\Downloads\\indus_ai\\data\\mvtec_anomaly_detection\\bottle\\test\\contamination\\010.png",
+      "label_name": "contamination",
+      "is_anomaly": true,
+      "score": 27.27386474609375
+    },
+    {
+      "image_path": "C:\\Users\\HP\\Downloads\\indus_ai\\data\\mvtec_anomaly_detection\\bottle\\test\\contamination\\011.png",
+      "label_name": "contamination",
+      "is_anomaly": true,
+      "score": 26.69400405883789
+    },
+    {
+      "image_path": "C:\\Users\\HP\\Downloads\\indus_ai\\data\\mvtec_anomaly_detection\\bottle\\test\\contamination\\012.png",
+      "label_name": "contamination",
+      "is_anomaly": true,
+      "score": 23.11634635925293
+    },
+    {
+      "image_path": "C:\\Users\\HP\\Downloads\\indus_ai\\data\\mvtec_anomaly_detection\\bottle\\test\\contamination\\013.png",
+      "label_name": "contamination",
+      "is_anomaly": true,
+      "score": 29.68965721130371
+    },
+    {
+      "image_path": "C:\\Users\\HP\\Downloads\\indus_ai\\data\\mvtec_anomaly_detection\\bottle\\test\\contamination\\014.png",
+      "label_name": "contamination",
+      "is_anomaly": true,
+      "score": 25.1667423248291
+    },
+    {
+      "image_path": "C:\\Users\\HP\\Downloads\\indus_ai\\data\\mvtec_anomaly_detection\\bottle\\test\\contamination\\015.png",
+      "label_name": "contamination",
+      "is_anomaly": true,
+      "score": 26.414762496948242
+    },
+    {
+      "image_path": "C:\\Users\\HP\\Downloads\\indus_ai\\data\\mvtec_anomaly_detection\\bottle\\test\\contamination\\016.png",
+      "label_name": "contamination",
+      "is_anomaly": true,
+      "score": 23.738122940063477
+    },
+    {
+      "image_path": "C:\\Users\\HP\\Downloads\\indus_ai\\data\\mvtec_anomaly_detection\\bottle\\test\\contamination\\017.png",
+      "label_name": "contamination",
+      "is_anomaly": true,
+      "score": 29.547021865844727
+    },
+    {
+      "image_path": "C:\\Users\\HP\\Downloads\\indus_ai\\data\\mvtec_anomaly_detection\\bottle\\test\\contamination\\018.png",
+      "label_name": "contamination",
+      "is_anomaly": true,
+      "score": 31.342247009277344
+    },
+    {
+      "image_path": "C:\\Users\\HP\\Downloads\\indus_ai\\data\\mvtec_anomaly_detection\\bottle\\test\\contamination\\019.png",
+      "label_name": "contamination",
+      "is_anomaly": true,
+      "score": 23.122583389282227
+    },
+    {
+      "image_path": "C:\\Users\\HP\\Downloads\\indus_ai\\data\\mvtec_anomaly_detection\\bottle\\test\\contamination\\020.png",
+      "label_name": "contamination",
+      "is_anomaly": true,
+      "score": 23.669775009155273
+    },
+    {
+      "image_path": "C:\\Users\\HP\\Downloads\\indus_ai\\data\\mvtec_anomaly_detection\\bottle\\test\\good\\000.png",
+      "label_name": "good",
+      "is_anomaly": false,
+      "score": 23.09327507019043
+    },
+    {
+      "image_path": "C:\\Users\\HP\\Downloads\\indus_ai\\data\\mvtec_anomaly_detection\\bottle\\test\\good\\001.png",
+      "label_name": "good",
+      "is_anomaly": false,
+      "score": 22.37950897216797
+    },
+    {
+      "image_path": "C:\\Users\\HP\\Downloads\\indus_ai\\data\\mvtec_anomaly_detection\\bottle\\test\\good\\002.png",
+      "label_name": "good",
+      "is_anomaly": false,
+      "score": 22.550395965576172
+    },
+    {
+      "image_path": "C:\\Users\\HP\\Downloads\\indus_ai\\data\\mvtec_anomaly_detection\\bottle\\test\\good\\003.png",
+      "label_name": "good",
+      "is_anomaly": false,
+      "score": 23.000581741333008
+    },
+    {
+      "image_path": "C:\\Users\\HP\\Downloads\\indus_ai\\data\\mvtec_anomaly_detection\\bottle\\test\\good\\004.png",
+      "label_name": "good",
+      "is_anomaly": false,
+      "score": 22.05518341064453
+    },
+    {
+      "image_path": "C:\\Users\\HP\\Downloads\\indus_ai\\data\\mvtec_anomaly_detection\\bottle\\test\\good\\005.png",
+      "label_name": "good",
+      "is_anomaly": false,
+      "score": 22.543289184570312
+    },
+    {
+      "image_path": "C:\\Users\\HP\\Downloads\\indus_ai\\data\\mvtec_anomaly_detection\\bottle\\test\\good\\006.png",
+      "label_name": "good",
+      "is_anomaly": false,
+      "score": 23.394351959228516
+    },
+    {
+      "image_path": "C:\\Users\\HP\\Downloads\\indus_ai\\data\\mvtec_anomaly_detection\\bottle\\test\\good\\007.png",
+      "label_name": "good",
+      "is_anomaly": false,
+      "score": 22.272850036621094
+    },
+    {
+      "image_path": "C:\\Users\\HP\\Downloads\\indus_ai\\data\\mvtec_anomaly_detection\\bottle\\test\\good\\008.png",
+      "label_name": "good",
+      "is_anomaly": false,
+      "score": 23.01865005493164
+    },
+    {
+      "image_path": "C:\\Users\\HP\\Downloads\\indus_ai\\data\\mvtec_anomaly_detection\\bottle\\test\\good\\009.png",
+      "label_name": "good",
+      "is_anomaly": false,
+      "score": 22.347949981689453
+    },
+    {
+      "image_path": "C:\\Users\\HP\\Downloads\\indus_ai\\data\\mvtec_anomaly_detection\\bottle\\test\\good\\010.png",
+      "label_name": "good",
+      "is_anomaly": false,
+      "score": 22.882688522338867
+    },
+    {
+      "image_path": "C:\\Users\\HP\\Downloads\\indus_ai\\data\\mvtec_anomaly_detection\\bottle\\test\\good\\011.png",
+      "label_name": "good",
+      "is_anomaly": false,
+      "score": 22.53424835205078
+    },
+    {
+      "image_path": "C:\\Users\\HP\\Downloads\\indus_ai\\data\\mvtec_anomaly_detection\\bottle\\test\\good\\012.png",
+      "label_name": "good",
+      "is_anomaly": false,
+      "score": 22.798999786376953
+    },
+    {
+      "image_path": "C:\\Users\\HP\\Downloads\\indus_ai\\data\\mvtec_anomaly_detection\\bottle\\test\\good\\013.png",
+      "label_name": "good",
+      "is_anomaly": false,
+      "score": 22.414329528808594
+    },
+    {
+      "image_path": "C:\\Users\\HP\\Downloads\\indus_ai\\data\\mvtec_anomaly_detection\\bottle\\test\\good\\014.png",
+      "label_name": "good",
+      "is_anomaly": false,
+      "score": 22.74298095703125
+    },
+    {
+      "image_path": "C:\\Users\\HP\\Downloads\\indus_ai\\data\\mvtec_anomaly_detection\\bottle\\test\\good\\015.png",
+      "label_name": "good",
+      "is_anomaly": false,
+      "score": 22.881250381469727
+    },
+    {
+      "image_path": "C:\\Users\\HP\\Downloads\\indus_ai\\data\\mvtec_anomaly_detection\\bottle\\test\\good\\016.png",
+      "label_name": "good",
+      "is_anomaly": false,
+      "score": 22.734193801879883
+    },
+    {
+      "image_path": "C:\\Users\\HP\\Downloads\\indus_ai\\data\\mvtec_anomaly_detection\\bottle\\test\\good\\017.png",
+      "label_name": "good",
+      "is_anomaly": false,
+      "score": 22.859792709350586
+    },
+    {
+      "image_path": "C:\\Users\\HP\\Downloads\\indus_ai\\data\\mvtec_anomaly_detection\\bottle\\test\\good\\018.png",
+      "label_name": "good",
+      "is_anomaly": false,
+      "score": 21.86476707458496
+    },
+    {
+      "image_path": "C:\\Users\\HP\\Downloads\\indus_ai\\data\\mvtec_anomaly_detection\\bottle\\test\\good\\019.png",
+      "label_name": "good",
+      "is_anomaly": false,
+      "score": 22.850013732910156
+    }
+  ]
+}

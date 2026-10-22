@@ -3,11 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Industrial AI Inspector: Explainable Visual Anomaly Detection">
-    <title>Industrial AI Inspector | Anomaly Detection</title>
+    <meta name="description" content="Industrial AI Inspector: Explainable Visual Anomaly Detection for Manufacturing QA">
+    <title>Industrial AI Inspector | Explainable Visual Anomaly Detection</title>
     <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
+    <!-- Top Application Bar -->
     <header class="app-header">
         <div class="header-container">
             <div class="brand">
@@ -20,123 +21,515 @@
                 </div>
                 <div>
                     <h1 class="brand-title">INDUSTRIAL AI INSPECTOR</h1>
-                    <p class="brand-subtitle">Explainable Visual Anomaly Detection for Manufacturing QA</p>
+                    <p class="brand-subtitle">Explainable Visual Anomaly Detection &bull; MVTec AD Bottle QA</p>
                 </div>
             </div>
-            <div class="status-indicator">
-                <span class="status-dot status-unknown" id="status-dot"></span>
-                <span class="status-text" id="status-label">Checking Backend...</span>
+
+            <div class="header-right">
+                <div class="category-badge">
+                    <span class="category-dot"></span>
+                    <span class="category-text">TARGET: BOTTLE (CPU INFERENCE)</span>
+                </div>
+                <div class="status-indicator">
+                    <span class="status-dot status-unknown" id="status-dot"></span>
+                    <span class="status-text" id="status-label">Checking Backend...</span>
+                </div>
             </div>
         </div>
+
+        <!-- Navigation Tabs -->
+        <nav class="nav-tabs" aria-label="Main Navigation">
+            <button class="nav-tab active" data-tab="tab-inspect" id="btn-tab-inspect">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+                Live Inspection Workspace
+            </button>
+            <button class="nav-tab" data-tab="tab-comparison" id="btn-tab-comparison">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="20" x2="18" y2="10"></line>
+                    <line x1="12" y1="20" x2="12" y2="4"></line>
+                    <line x1="6" y1="20" x2="6" y2="14"></line>
+                </svg>
+                Model Benchmarks & Comparison
+            </button>
+            <button class="nav-tab" data-tab="tab-history" id="btn-tab-history">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+                Inspection History (<span id="history-badge-count">0</span>)
+            </button>
+            <button class="nav-tab" data-tab="tab-diagnostics" id="btn-tab-diagnostics">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect width="20" height="14" x="2" y="3" rx="2"></rect>
+                    <line x1="8" y1="21" x2="16" y2="21"></line>
+                    <line x1="12" y1="17" x2="12" y2="21"></line>
+                </svg>
+                System Diagnostics
+            </button>
+        </nav>
     </header>
 
     <main class="main-content">
-        <!-- Diagnostic Overview Card -->
-        <section class="card diagnostics-panel">
-            <div class="card-header">
-                <h2>System Pre-Flight Status</h2>
-                <button id="btn-check-health" class="btn btn-secondary">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M23 4v6h-6"></path>
-                        <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
-                    </svg>
-                    Poll Backend Health
-                </button>
-            </div>
-            <div class="grid-stats">
-                <div class="stat-box">
-                    <span class="stat-label">System State</span>
-                    <span class="stat-value" id="stat-status">Connecting...</span>
-                </div>
-                <div class="stat-box">
-                    <span class="stat-label">Python Environment</span>
-                    <span class="stat-value" id="stat-python">Checking...</span>
-                </div>
-                <div class="stat-box">
-                    <span class="stat-label">Platform Host</span>
-                    <span class="stat-value" id="stat-platform">Checking...</span>
-                </div>
-                <div class="stat-box">
-                    <span class="stat-label">Active Phase</span>
-                    <span class="stat-value" id="stat-phase">Phase 1</span>
-                </div>
-            </div>
+        <!-- =============================================================== -->
+        <!-- TAB 1: LIVE INSPECTION WORKSPACE                               -->
+        <!-- =============================================================== -->
+        <section class="tab-pane active" id="tab-inspect">
+            <div class="workspace-grid">
+                <!-- Left Control Column -->
+                <div class="workspace-sidebar">
+                    <!-- Image Input Card -->
+                    <div class="card control-card">
+                        <div class="card-header">
+                            <h2>1. Select Product Image</h2>
+                            <span class="badge badge-accent">Input</span>
+                        </div>
 
-            <div class="console-wrapper">
-                <div class="console-header">
-                    <span>API Response Log (GET /api/health)</span>
-                    <span class="console-timestamp" id="response-timestamp">--:--:--</span>
+                        <!-- Dropzone Area -->
+                        <div class="dropzone" id="dropzone">
+                            <input type="file" id="file-input" accept="image/png,image/jpeg,image/bmp" class="file-input-hidden">
+                            <div class="dropzone-content" id="dropzone-prompt">
+                                <div class="dropzone-icon">
+                                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                        <polyline points="17 8 12 3 7 8"></polyline>
+                                        <line x1="12" y1="3" x2="12" y2="15"></line>
+                                    </svg>
+                                </div>
+                                <p class="dropzone-title">Drag & Drop Image Here</p>
+                                <p class="dropzone-sub">or <button type="button" class="link-btn" id="btn-browse">browse from computer</button></p>
+                                <span class="dropzone-hint">PNG, JPEG, BMP &bull; Max 10 MB</span>
+                            </div>
+                            <!-- Selected File / Preview Display -->
+                            <div class="dropzone-preview hidden" id="dropzone-preview">
+                                <img src="" alt="Selected Product Preview" id="preview-thumb" class="preview-thumb">
+                                <div class="preview-meta">
+                                    <span class="preview-filename" id="preview-filename">bottle.png</span>
+                                    <span class="preview-filesize" id="preview-filesize">-- KB</span>
+                                    <button type="button" class="btn btn-sm btn-secondary" id="btn-clear-image">Replace</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Preset Test Samples -->
+                        <div class="sample-presets-section">
+                            <div class="section-title">
+                                <span>Quick Test Presets (MVTec Bottle)</span>
+                                <span class="section-hint">One-click load</span>
+                            </div>
+                            <div class="preset-grid" id="preset-grid">
+                                <button type="button" class="preset-btn" data-preset="sample_good_000">
+                                    <span class="preset-dot dot-normal"></span>
+                                    <span class="preset-name">Normal Bottle</span>
+                                    <span class="preset-tag">Pristine</span>
+                                </button>
+                                <button type="button" class="preset-btn" data-preset="sample_broken_large_000">
+                                    <span class="preset-dot dot-defect"></span>
+                                    <span class="preset-name">Broken Large</span>
+                                    <span class="preset-tag">Fracture</span>
+                                </button>
+                                <button type="button" class="preset-btn" data-preset="sample_broken_small_000">
+                                    <span class="preset-dot dot-defect"></span>
+                                    <span class="preset-name">Broken Small</span>
+                                    <span class="preset-tag">Rim Chip</span>
+                                </button>
+                                <button type="button" class="preset-btn" data-preset="sample_contamination_000">
+                                    <span class="preset-dot dot-defect"></span>
+                                    <span class="preset-name">Contamination</span>
+                                    <span class="preset-tag">Chemical / Smudge</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Inspection Settings Card -->
+                    <div class="card control-card">
+                        <div class="card-header">
+                            <h2>2. Model & Strategy</h2>
+                            <span class="badge badge-subtle">Config</span>
+                        </div>
+
+                        <!-- Model Selector -->
+                        <div class="form-group">
+                            <label class="form-label">Inference Model</label>
+                            <div class="pill-group" id="model-selector">
+                                <button type="button" class="pill-btn" data-value="reconstruction">Reconstruction</button>
+                                <button type="button" class="pill-btn" data-value="patchcore">PatchCore</button>
+                                <button type="button" class="pill-btn active" data-value="both">Compare Both</button>
+                            </div>
+                            <p class="form-caption" id="model-caption">Runs both models concurrently to evaluate agreement and spatial contrast.</p>
+                        </div>
+
+                        <!-- Threshold Strategy -->
+                        <div class="form-group">
+                            <label class="form-label">
+                                Decision Threshold Strategy
+                                <span class="info-tooltip" title="Unbiased thresholds are calibrated exclusively on defect-free training images without test set leakage.">ⓘ</span>
+                            </label>
+                            <div class="pill-group" id="threshold-selector">
+                                <button type="button" class="pill-btn active" data-value="unbiased">Unbiased (Train Normal)</button>
+                                <button type="button" class="pill-btn" data-value="optimal">Test-Tuned (Youden's J)</button>
+                                <button type="button" class="pill-btn" data-value="custom">Custom</button>
+                            </div>
+                            <div class="threshold-legend" id="threshold-legend">
+                                <div class="thresh-pill">
+                                    <span class="thresh-name">Recon &tau;:</span>
+                                    <span class="thresh-val" id="thresh-recon-display">23.7207</span>
+                                </div>
+                                <div class="thresh-pill">
+                                    <span class="thresh-name">PatchCore &tau;:</span>
+                                    <span class="thresh-val" id="thresh-patch-display">10.0016</span>
+                                </div>
+                            </div>
+
+                            <!-- Custom Threshold Sliders (shown when 'custom' is active) -->
+                            <div class="custom-thresholds hidden" id="custom-thresholds-container">
+                                <div class="slider-row">
+                                    <div class="slider-header">
+                                        <span>Reconstruction &tau;:</span>
+                                        <span id="slider-recon-val">23.72</span>
+                                    </div>
+                                    <input type="range" id="input-thresh-recon" min="15.0" max="35.0" step="0.1" value="23.72" class="range-slider">
+                                </div>
+                                <div class="slider-row">
+                                    <div class="slider-header">
+                                        <span>PatchCore &tau;:</span>
+                                        <span id="slider-patch-val">10.00</span>
+                                    </div>
+                                    <input type="range" id="input-thresh-patch" min="5.0" max="25.0" step="0.1" value="10.00" class="range-slider">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Run Action Button -->
+                        <button type="button" class="btn btn-primary btn-inspect" id="btn-run-inspect" disabled>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                            </svg>
+                            <span id="btn-inspect-text">Run Visual Inspection</span>
+                        </button>
+                    </div>
                 </div>
-                <pre class="console-body" id="console-output">Awaiting health check...</pre>
+
+                <!-- Right Results Workspace -->
+                <div class="workspace-main">
+                    <!-- Empty / Waiting State -->
+                    <div class="card empty-state-card" id="empty-state-view">
+                        <div class="empty-icon">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                            </svg>
+                        </div>
+                        <h3>Inspection Standby</h3>
+                        <p>Select a preset bottle sample on the left or upload your own product image, then click <strong>Run Visual Inspection</strong> to generate pixel-level explainable heatmaps.</p>
+                        <div class="empty-features">
+                            <div class="feature-tag">&bull; Dual-Model Architecture</div>
+                            <div class="feature-tag">&bull; Pixel Heatmaps</div>
+                            <div class="feature-tag">&bull; Interactive Alpha Slider</div>
+                            <div class="feature-tag">&bull; CPU Latency Benchmarks</div>
+                        </div>
+                    </div>
+
+                    <!-- Inspection Loading State -->
+                    <div class="card loading-state-card hidden" id="loading-state-view">
+                        <div class="spinner"></div>
+                        <h3>Analyzing Product Visual Patterns...</h3>
+                        <p id="loading-step-text">Extracting ResNet-50 spatial embeddings and computing reconstruction errors...</p>
+                    </div>
+
+                    <!-- Active Inspection Results Panel -->
+                    <div class="inspection-results-wrapper hidden" id="results-view">
+                        <!-- Top Verdict Banner -->
+                        <div class="verdict-banner" id="verdict-banner">
+                            <div class="verdict-main">
+                                <div class="verdict-icon" id="verdict-icon">
+                                    <!-- Dynamic SVG injected by JS -->
+                                </div>
+                                <div>
+                                    <div class="verdict-status" id="verdict-status">NORMAL / PASS</div>
+                                    <div class="verdict-subtitle" id="verdict-subtitle">Both models passed this unit as defect-free.</div>
+                                </div>
+                            </div>
+                            <div class="verdict-meta">
+                                <div class="meta-item">
+                                    <span class="meta-label">Total Latency</span>
+                                    <span class="meta-value" id="verdict-latency">-- ms</span>
+                                </div>
+                                <div class="meta-item">
+                                    <span class="meta-label">Agreement</span>
+                                    <span class="meta-value" id="verdict-agreement">Concordant</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Opacity Slider Control Toolbar -->
+                        <div class="card overlay-toolbar">
+                            <div class="toolbar-left">
+                                <span class="toolbar-label">Interactive Heatmap Opacity:</span>
+                                <span class="toolbar-val" id="opacity-val-display">45%</span>
+                            </div>
+                            <div class="toolbar-slider-wrapper">
+                                <span class="slider-end-label">Original</span>
+                                <input type="range" id="opacity-slider" min="0" max="100" value="45" class="range-slider opacity-slider">
+                                <span class="slider-end-label">Heatmap</span>
+                            </div>
+                            <div class="toolbar-right">
+                                <button type="button" class="btn btn-sm btn-secondary" id="btn-toggle-views">Toggle Side-by-Side</button>
+                            </div>
+                        </div>
+
+                        <!-- Visual Comparison Panels Container -->
+                        <div class="visual-panels-container" id="visual-panels-container">
+                            <!-- Dynamic Content Rendered by JavaScript -->
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
 
-        <!-- Project Roadmap / Architectural Overview -->
-        <section class="card roadmap-panel">
-            <div class="card-header">
-                <h2>Development Milestones</h2>
-                <span class="badge badge-accent">Phase 1 Complete</span>
+        <!-- =============================================================== -->
+        <!-- TAB 2: MODEL BENCHMARKS & COMPARISON                            -->
+        <!-- =============================================================== -->
+        <section class="tab-pane" id="tab-comparison">
+            <!-- Benchmark Metrics Banner -->
+            <div class="grid-stats benchmark-summary-grid">
+                <div class="stat-box stat-highlight">
+                    <span class="stat-label">Image-Level AUROC</span>
+                    <span class="stat-value text-accent" id="bench-image-auroc">99.68% vs 100.00%</span>
+                    <span class="stat-sub">PatchCore achieves perfect 100% separation</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-label">Pixel Localization AUROC</span>
+                    <span class="stat-value text-success" id="bench-pixel-auroc">96.41% vs 97.97%</span>
+                    <span class="stat-sub">PatchCore +1.56% localization fidelity</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-label">Single-Image CPU Latency</span>
+                    <span class="stat-value text-warning" id="bench-latency">160.2 ms vs 224.5 ms</span>
+                    <span class="stat-sub">Reconstruction is ~29% faster on CPU</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-label">Defect Misses (Held-Out Test)</span>
+                    <span class="stat-value text-danger" id="bench-misses">3 vs 0</span>
+                    <span class="stat-sub">PatchCore caught 63/63 defects</span>
+                </div>
             </div>
-            <div class="milestone-list">
-                <div class="milestone-item active">
-                    <div class="milestone-step">01</div>
-                    <div class="milestone-info">
-                        <h3>Environment & Architecture Skeleton</h3>
-                        <p>Project scaffolding, virtual environment isolation, Flask REST server, Vanilla HTML/CSS/JS frontend, and test suite.</p>
+
+            <!-- Detailed Comparison Table -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Empirical Benchmark Comparison (MVTec AD Bottle)</h2>
+                    <span class="badge badge-accent">N=83 Test Set &bull; Real Pretrained Weights</span>
+                </div>
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Metric / Characteristic</th>
+                                <th>Feature Reconstruction Autoencoder</th>
+                                <th>PatchCore Baseline</th>
+                                <th>Engineering Analysis & Trade-Off</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Image-Level AUROC</strong></td>
+                                <td class="metric-num">99.68%</td>
+                                <td class="metric-num text-success">100.00%</td>
+                                <td>PatchCore perfectly separates all normal bottles from defects (+2.53 score gap).</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Pixel Localization AUROC</strong></td>
+                                <td class="metric-num">96.41%</td>
+                                <td class="metric-num text-success">97.97%</td>
+                                <td>PatchCore resolves bottle contour edge-noise, achieving 100% spatial peak overlap.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Optimal F1-Score (Youden's J)</strong></td>
+                                <td class="metric-num">0.9756</td>
+                                <td class="metric-num text-success">1.0000</td>
+                                <td>PatchCore achieves 0 false alarms and 0 false negatives at optimal test threshold.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Unbiased F1 (Train Normal 99th-pct)</strong></td>
+                                <td class="metric-num text-success">0.9672</td>
+                                <td class="metric-num">0.8936</td>
+                                <td>Reconstruction maintains tighter training normal bounds, yielding higher unsupervised precision.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>False Negatives (Missed Defects)</strong></td>
+                                <td class="metric-num">3 (subtle contaminations)</td>
+                                <td class="metric-num text-success">0 (100% captured)</td>
+                                <td>PatchCore captures faint low-contrast smudges missed by the reconstruction bottleneck.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Mean CPU Latency</strong></td>
+                                <td class="metric-num text-success">160.18 ms (6.24 FPS)</td>
+                                <td class="metric-num">224.46 ms (4.46 FPS)</td>
+                                <td>Reconstruction is single-pass CNN inference; PatchCore executes nearest-neighbor searches.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Model Footprint on Disk</strong></td>
+                                <td class="metric-num">11.5 MB</td>
+                                <td class="metric-num text-success">9.6 MB</td>
+                                <td>PatchCore memory bank coreset (1,639 vectors) is compact.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Feature Representations</strong></td>
+                                <td>ResNet-50 <code>layer2</code> (512 channels)</td>
+                                <td>ResNet-50 <code>layer2</code> + <code>layer3</code> (1536 channels)</td>
+                                <td>Multi-scale neighborhood patch aggregation provides richer local texture representations.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Per-Defect Category Breakdown Table -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Defect Class Breakdown & Separation Margin</h2>
+                    <span class="badge badge-subtle">Evaluation Statistics</span>
+                </div>
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Category / Defect</th>
+                                <th>Sample Count</th>
+                                <th>Reconstruction Mean Score</th>
+                                <th>PatchCore Mean Score</th>
+                                <th>Class Separation Audit</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="status-pill pill-normal">`good` (Normal Pristine)</span></td>
+                                <td>20</td>
+                                <td>22.66 &plusmn; 0.36</td>
+                                <td>10.13 &plusmn; 0.31</td>
+                                <td>Strictly bounded normal baseline with minimal variance across both models.</td>
+                            </tr>
+                            <tr>
+                                <td><span class="status-pill pill-defect">`broken_large` (Fracture)</span></td>
+                                <td>20</td>
+                                <td>27.38 &plusmn; 0.79 (+4.72 gap)</td>
+                                <td>20.95 &plusmn; 1.44 (+10.82 gap)</td>
+                                <td>100% detection rate across both models. Massive structural discrepancy.</td>
+                            </tr>
+                            <tr>
+                                <td><span class="status-pill pill-defect">`broken_small` (Rim Chip)</span></td>
+                                <td>22</td>
+                                <td>27.17 &plusmn; 1.05 (+4.51 gap)</td>
+                                <td>18.33 &plusmn; 1.90 (+8.20 gap)</td>
+                                <td>100% detection rate. Localized to rim chipping.</td>
+                            </tr>
+                            <tr>
+                                <td><span class="status-pill pill-defect">`contamination` (Surface)</span></td>
+                                <td>21</td>
+                                <td>26.34 &plusmn; 2.77 (+3.68 gap)</td>
+                                <td>20.03 &plusmn; 4.27 (+9.90 gap)</td>
+                                <td>Reconstruction missed 3 faint droplets; PatchCore completely separated all 21.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- =============================================================== -->
+        <!-- TAB 3: INSPECTION HISTORY                                      -->
+        <!-- =============================================================== -->
+        <section class="tab-pane" id="tab-history">
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <h2>Inspection Log & History</h2>
+                        <p class="card-subtitle">Bounded in-memory cache of the last 50 visual inspections.</p>
                     </div>
-                    <span class="milestone-tag">Ready</span>
+                    <button type="button" class="btn btn-secondary" id="btn-clear-history">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="3 6 5 6 21 6"></polyline>
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                        </svg>
+                        Clear History
+                    </button>
                 </div>
 
-                <div class="milestone-item">
-                    <div class="milestone-step">02</div>
-                    <div class="milestone-info">
-                        <h3>Dataset Ingestion & Preprocessing</h3>
-                        <p>MVTec AD category loader, resolution standardization (224x224), normal-only training splits, and validation masks.</p>
+                <div class="history-list-wrapper" id="history-container">
+                    <div class="history-empty" id="history-empty-message">
+                        <p>No inspections recorded yet. Inspect product units in the workspace to log history.</p>
                     </div>
-                    <span class="milestone-tag pending">Upcoming</span>
+                    <table class="data-table hidden" id="history-table">
+                        <thead>
+                            <tr>
+                                <th>Thumbnail</th>
+                                <th>Timestamp</th>
+                                <th>Source</th>
+                                <th>Model(s)</th>
+                                <th>Recon Score</th>
+                                <th>PatchCore Score</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="history-table-body">
+                            <!-- Injected by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- =============================================================== -->
+        <!-- TAB 4: SYSTEM DIAGNOSTICS                                      -->
+        <!-- =============================================================== -->
+        <section class="tab-pane" id="tab-diagnostics">
+            <div class="card diagnostics-panel">
+                <div class="card-header">
+                    <h2>Backend Runtime & Diagnostic Telemetry</h2>
+                    <button id="btn-check-health" class="btn btn-secondary">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M23 4v6h-6"></path>
+                            <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+                        </svg>
+                        Poll Backend Health
+                    </button>
+                </div>
+                <div class="grid-stats">
+                    <div class="stat-box">
+                        <span class="stat-label">System State</span>
+                        <span class="stat-value" id="stat-status">Connecting...</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="stat-label">Python Environment</span>
+                        <span class="stat-value" id="stat-python">Checking...</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="stat-label">Platform Host</span>
+                        <span class="stat-value" id="stat-platform">Checking...</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="stat-label">Active Phase</span>
+                        <span class="stat-value" id="stat-phase">Phase 6: Live Dashboard</span>
+                    </div>
                 </div>
 
-                <div class="milestone-item">
-                    <div class="milestone-step">03</div>
-                    <div class="milestone-info">
-                        <h3>Feature Reconstruction Engine</h3>
-                        <p>ResNet50 multi-scale feature extractor and spatial autoencoder trained to reconstruct defect-free feature maps.</p>
+                <div class="console-wrapper">
+                    <div class="console-header">
+                        <span>API Response Log (GET /api/models &amp; /api/health)</span>
+                        <span class="console-timestamp" id="response-timestamp">--:--:--</span>
                     </div>
-                    <span class="milestone-tag pending">Upcoming</span>
-                </div>
-
-                <div class="milestone-item">
-                    <div class="milestone-step">04</div>
-                    <div class="milestone-info">
-                        <h3>PatchCore Baseline & Heatmap Generator</h3>
-                        <p>Memory bank with greedy coreset subsampling, cosine anomaly scoring, and Gaussian-smoothed pixel heatmaps.</p>
-                    </div>
-                    <span class="milestone-tag pending">Upcoming</span>
-                </div>
-
-                <div class="milestone-item">
-                    <div class="milestone-step">05</div>
-                    <div class="milestone-info">
-                        <h3>Evaluation & Anomaly Localization Metrics</h3>
-                        <p>Rigorous image-level ROC-AUC, pixel-level PRO-AUC, precision-recall thresholds, and model comparison.</p>
-                    </div>
-                    <span class="milestone-tag pending">Upcoming</span>
-                </div>
-
-                <div class="milestone-item">
-                    <div class="milestone-step">06</div>
-                    <div class="milestone-info">
-                        <h3>Interactive QA Dashboard</h3>
-                        <p>End-to-end defect inspection interface with side-by-side original, anomaly heatmaps, and severity thresholds.</p>
-                    </div>
-                    <span class="milestone-tag pending">Upcoming</span>
+                    <pre class="console-body" id="console-output">Awaiting health check...</pre>
                 </div>
             </div>
         </section>
     </main>
 
     <footer class="app-footer">
-        <p>Industrial AI Inspector &bull; Visual Anomaly Detection System &bull; Placement-Grade ML Architecture</p>
+        <p>Industrial AI Inspector &bull; Explainable Visual Anomaly Detection &bull; PyTorch ResNet-50 + PatchCore &bull; Placement-Grade ML Architecture</p>
     </footer>
 
     <script src="/js/app.js"></script>

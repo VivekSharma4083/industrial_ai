@@ -52,15 +52,16 @@ ehthumbs.db
 *.local
 
 # Data, Model Weights & Artifacts
-data/
-datasets/
-mvtec_ad/
+/data/
+/datasets/
+/mvtec_ad/
 *.tar.xz
 *.tar.gz
 *.tar
-*.zip
 artifacts/*
 !artifacts/.gitkeep
+!artifacts/eval_results/
+!artifacts/eval_results/**
 *.pth
 *.pt
 *.onnx

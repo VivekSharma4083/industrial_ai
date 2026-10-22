@@ -2,8 +2,12 @@
 
 [![Python 3.12](https://img.shields.io/badge/python-3.12-blue.svg)](https://www.python.org/downloads/)
 [![Flask 3.0](https://img.shields.io/badge/Flask-3.0.3-black.svg)](https://flask.palletsprojects.com/)
-[![Tests](https://img.shields.io/badge/tests-passing-brightgreen.svg)](tests/)
-[![Architecture](https://img.shields.io/badge/Architecture-Modular%20Full--Stack-orange.svg)]()
+[![PyTorch 2.14 CPU](https://img.shields.io/badge/PyTorch-2.14.1%2Bcpu-ee4c2c.svg)](https://pytorch.org/)
+[![Tests Passing](https://img.shields.io/badge/tests-46%20passed-brightgreen.svg)](tests/)
+[![PatchCore AUROC](https://img.shields.io/badge/PatchCore--AUROC-100.0%25-success.svg)](docs/patchcore_phase5.md)
+[![Recon AUROC](https://img.shields.io/badge/Reconstruction--AUROC-99.68%25-brightgreen.svg)](docs/evaluation_phase4.md)
+[![Pixel AUROC](https://img.shields.io/badge/Pixel--AUROC-97.97%25-blueviolet.svg)](docs/patchcore_phase5.md)
+[![License](https://img.shields.io/badge/Dataset-MVTec%20CC%20BY--NC--SA%204.0-lightgrey.svg)](docs/dataset_guide.md)
 
 > **Placement-Grade Computer Vision & Industrial Quality Assurance System**  
 > Learns representation manifolds from defect-free industrial products and identifies, localizes, and explains anomalies in unseen test images without requiring labeled defect data during training.
@@ -17,16 +21,23 @@ In real-world manufacturing and assembly lines, defective samples are exceedingl
 **Industrial AI Inspector** solves this via **unsupervised / one-class anomaly detection**:
 1. **Normal Feature Learning:** Extracts deep semantic representations of pristine products using a pretrained ResNet-50 backbone.
 2. **Feature Reconstruction Autoencoding:** Trains a spatial feature reconstruction network strictly on defect-free samples. When presented with an anomalous region, the model cannot faithfully reconstruct it, generating a pronounced reconstruction error.
-3. **PatchCore Comparison Baseline:** Benchmarks against PatchCore, utilizing neighborhood-aware patch embeddings and greedy coreset subsampling.
-4. **Explainable Anomaly Heatmaps:** Projects spatial reconstruction and distance residuals back to pixel space, generating high-resolution Gaussian-smoothed heatmaps and defect bounding overlays.
-5. **Decoupled Architecture:** Features a high-performance Flask REST API coupled with a responsive, zero-framework Vanilla HTML5/CSS3/JavaScript web interface.
+3. **PatchCore Comparison Baseline:** Benchmarks against PatchCore, utilizing neighborhood-aware patch embeddings (`layer2` + `layer3`) and greedy coreset subsampling.
+4. **Explainable Anomaly Heatmaps:** Projects spatial reconstruction residuals back to pixel space, generating high-resolution Gaussian-smoothed heatmaps and defect bounding overlays.
+5. **Decoupled Full-Stack Architecture:** Features a high-performance Flask REST API coupled with a responsive, zero-framework Vanilla HTML5/CSS3/JavaScript web interface with real-time 60 FPS client-side opacity slider blending.
+
+> [!NOTE]
+> **Implementation Status (Phase 6 Complete — Interactive Full-Stack Inspection Dashboard):**  
+> - **Interactive QA Interface:** Drag & drop image upload, preset sample gallery (normal, fracture, chip, contamination), model selector (Reconstruction, PatchCore, or Both), decision threshold strategy toggle (unbiased vs optimal vs custom), and real-time interactive opacity slider.
+> - **Inference Engine:** Single-instance CPU singleton model service reuses checkpoints across requests.
+> - **Inspection History:** Bounded in-memory cache of past 50 inspections with thumbnails and one-click workspace reloading.
+> - **Dual-Model Benchmark:** Grounded in genuine MVTec AD bottle evaluation (PatchCore: 100.00% AUROC; Reconstruction: 99.68% AUROC). All 46 automated unit/integration tests passing.
 
 ---
 
 ## 2. Technology Stack
 
 ### Frontend (Zero Framework Overhead)
-- **HTML5 & CSS3:** Precision dark industrial design system with custom CSS variables, responsive grids, and diagnostic telemetry.
+- **HTML5 & CSS3:** Precision dark industrial design system with custom CSS variables, responsive cards, and live telemetry.
 - **Vanilla JavaScript (ES6+):** Pure Fetch API interaction with backend endpoints; no heavy framework build steps (React/Vue/Streamlit) required.
 
 ### Backend
@@ -35,10 +46,12 @@ In real-world manufacturing and assembly lines, defective samples are exceedingl
 - **Pillow 10.4.0:** Resilient image ingestion and preprocessing.
 - **PyTest 8.4.2:** Automated test discovery and endpoint verification.
 
-### Machine Learning Roadmap (Phases 2-6)
-- **PyTorch & torchvision:** Multi-scale feature extraction and reconstruction autoencoder.
-- **Scikit-Learn:** Coreset reduction, ROC-AUC, and PRO-AUC (Per-Region-Overlap) metric computation.
-- **MVTec AD Dataset:** The industrial gold-standard benchmark containing 15 object and texture categories.
+### Machine Learning & Vision Foundation (Phases 2 & 3)
+- **PyTorch 2.14.1+cpu & torchvision 0.29.1+cpu:** Official CPU wheel index (`https://download.pytorch.org/whl/cpu`) ensuring high efficiency on CPU hardware without requiring NVIDIA CUDA drivers.
+- **NumPy 2.5.2:** Numerical tensor array operations.
+- **ResNet-50 Intermediate Feature Extractor:** Frozen feature representations from `layer2` (512-dim, 28x28 grid) or `layer3` (1024-dim, 14x14 grid).
+- **Spatial Autoencoder:** 1.0M-parameter convolutional bottleneck network (~4 MB on disk).
+- **MVTec AD Dataset:** The industrial gold-standard benchmark. Initial target category: `bottle`.
 
 ---
 
@@ -55,27 +68,62 @@ industrial-ai-inspector/
 │   │   └── app.js                # Fetch API client and UI controller
 │   └── assets/                   # Icons, badges, and reference illustrations
 ├── backend/                      # Flask Application Server
-│   ├── app.py                    # App factory and static router
+│   ├── __init__.py               # Package marker
+│   ├── app.py                    # App factory and static router (10 MB payload limit)
 │   ├── routes/
 │   │   ├── __init__.py           # Route blueprint registry
-│   │   └── health.py             # GET /api/health endpoint
+│   │   ├── health.py             # GET /api/health endpoint
+│   │   └── inspect.py            # POST /api/inspect, GET /api/models, /api/history, /api/samples
 │   └── services/                 # Backend business logic & inference services
-│       └── __init__.py
-├── src/                          # Core ML & Vision Packages (Phases 2-5)
-│   ├── data/                     # Dataset loaders, transforms & split managers
-│   ├── models/                   # Feature extractors, Autoencoder & PatchCore
-│   ├── evaluation/               # Image ROC-AUC, Pixel PRO-AUC & confusion metrics
-│   └── visualization/            # Heatmap overlays, color maps & report generators
-├── configs/                      # Experiment and hyperparameter configurations (YAML)
+│       ├── __init__.py
+│       └── model_service.py      # Singleton model manager, base64 jet heatmaps, history cache
+├── src/                          # Core ML & Vision Packages
+│   ├── __init__.py
+│   ├── data/                     # Dataset Pipeline (Phase 2)
+│   │   ├── __init__.py           # Package exports
+│   │   ├── config.py             # DatasetConfig path & category manager
+│   │   ├── validator.py          # MVTecValidator & integrity verification
+│   │   └── dataset.py            # PyTorch MVTecDataset implementation
+│   ├── models/                   # Vision & Anomaly Models (Phases 3 & 5)
+│   │   ├── __init__.py           # Package exports
+│   │   ├── feature_extractor.py  # Frozen intermediate ResNet50 extractor
+│   │   ├── reconstruction.py     # Lightweight convolutional autoencoder
+│   │   ├── anomaly_detector.py   # Anomaly heatmap generation & scoring engine
+│   │   ├── trainer.py            # Normal-only training manager & checkpointing
+│   │   └── patchcore.py          # PatchCore multi-scale memory bank & coreset model
+│   ├── evaluation/               # Image ROC-AUC, Pixel PRO-AUC metrics (Phases 4-5)
+│   │   ├── __init__.py           # Metric exports
+│   │   └── metrics.py            # AUROC, per-defect stats & latency benchmarking
+│   └── visualization/            # Heatmap overlays & report generators
+├── configs/                      # Experiment and hyperparameter configurations
 ├── scripts/                      # Operational utilities & automation
 │   ├── check_environment.py     # Pre-flight environment diagnostics
-│   └── verify_live_server.py    # Live socket HTTP server validation
-├── tests/                        # Automated unit & integration tests
+│   ├── verify_live_server.py    # Live socket HTTP server validation
+│   ├── inspect_dataset.py       # Dataset validation & contact-sheet generator
+│   ├── smoke_test_models.py     # CPU end-to-end model smoke test
+│   ├── download_bottle.py       # Selective MVTec bottle dataset downloader
+│   ├── train.py                 # Training script for feature reconstruction
+│   ├── evaluate.py              # Quantitative evaluation (Reconstruction model)
+│   ├── train_patchcore.py       # Memory bank fitting script (PatchCore)
+│   └── evaluate_patchcore.py    # Quantitative evaluation & benchmark (PatchCore)
+├── tests/                        # Automated unit & integration tests (46 total passing)
 │   ├── __init__.py
-│   └── test_health.py            # API route and asset delivery tests
+│   ├── test_health.py            # API route and asset delivery tests (5 tests)
+│   ├── test_dataset.py           # Dataset pipeline & synthetic mock tests (8 tests)
+│   ├── test_models.py            # Feature extractor, autoencoder & detector tests (9 tests)
+│   ├── test_evaluation.py        # Metrics, AUROC, latency & overlay tests (8 tests)
+│   ├── test_patchcore.py         # PatchCore embeddings, coreset & scoring tests (6 tests)
+│   └── test_api_inspection.py    # Inspection API, model service, presets & history (10 tests)
 ├── artifacts/                    # Saved weights, logs, heatmaps (Git-ignored)
+│   ├── checkpoints/              # Model checkpoints (*.pth)
+│   ├── eval_heatmaps/            # Generated visual explanation overlays
+│   └── eval_results/             # Evaluation summary JSON metrics
 ├── docs/                         # Technical architecture documentation
-├── requirements.txt              # Phase-scoped dependency specifications
+│   ├── dataset_guide.md          # MVTec AD licensing, layout & download guide
+│   ├── model_architecture.md     # Feature reconstruction architecture & rationale
+│   ├── evaluation_phase4.md      # Phase 4 empirical results & benchmark report
+│   └── patchcore_phase5.md       # Phase 5 PatchCore technical report & comparison
+├── requirements.txt              # Pinned dependency specifications (with CPU index)
 ├── .gitignore                    # Robust exclusion rules
 └── README.md                     # Project blueprint & operating instructions
 ```
@@ -84,31 +132,21 @@ industrial-ai-inspector/
 
 ## 4. Environment Diagnostics & System Profile
 
-Pre-flight hardware inspection of the development machine:
 - **Operating System:** Windows 64-bit (`win32`)
 - **Python Runtime:** Python 3.12.10 (`py -3.12`)
 - **Graphics Controller:** Intel(R) UHD Graphics 620 (integrated, no NVIDIA GPU)
-- **Hardware Strategy:** Optimized CPU inference mode will be configured for PyTorch in Phase 2 to ensure maximum reproducibility, fast cold starts, and zero dependency on proprietary CUDA drivers.
-- **Storage Profile:** ~9 GB free on host drive. To avoid disk exhaustion, dataset ingestion in Phase 2 will support selective category extraction (e.g., `bottle`, `carpet`).
+- **PyTorch Execution Target:** CPU (`torch.cuda.is_available() == False`).
+- **Storage Profile:** ~8.23 GB free on host drive. Checkpoints require only ~4 MB each.
 
 ---
 
 ## 5. Quickstart & Setup Guide (Windows PowerShell)
 
-### Step 1: Create and Activate Virtual Environment
+### Step 1: Activate Virtual Environment
 ```powershell
-# Open Windows PowerShell in the project root:
 cd C:\Users\HP\Downloads\indus_ai
-
-# Create a project-local virtual environment using Python 3.12
-py -3.12 -m venv .venv
-
-# Activate the virtual environment
 .\.venv\Scripts\Activate.ps1
 ```
-
-> **Note on PowerShell Execution Policy:** If script execution is restricted on Windows, run:
-> `Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass`
 
 ### Step 2: Install Dependencies
 ```powershell
@@ -119,63 +157,53 @@ pip install -r requirements.txt
 ```powershell
 python scripts/check_environment.py
 ```
-*Expected Output: `[SUCCESS] Environment inspection passed! Project skeleton is verified.`*
 
-### Step 4: Run the Test Suite
+### Step 4: Run the Complete Test Suite
 ```powershell
 pytest -v
 ```
-*Expected Output: `5 passed in <1.00s`*
+*Expected Output: `36 passed in <21.00s`*
 
-### Step 5: Verify Live HTTP Server
+### Step 5: Train Feature Reconstruction Model (20 epochs)
 ```powershell
-python scripts/verify_live_server.py
+python scripts/train.py --category bottle --epochs 20 --batch-size 16 --layer layer2
 ```
+*Expected Output: `[SUCCESS] Training completed! Model saved to: .../reconstruction_bottle.pth`*
 
-### Step 6: Start the Flask Application
+### Step 6: Fit PatchCore Memory Bank (1% Coreset Subsampling)
+```powershell
+python scripts/train_patchcore.py --category bottle --coreset-ratio 0.01
+```
+*Expected Output: `[SUCCESS] PatchCore model checkpoint saved to: .../patchcore_bottle.pth`*
+
+### Step 7: Run Quantitative Evaluation & Side-by-Side Benchmarks
+```powershell
+# Evaluate Feature Reconstruction Autoencoder
+python scripts/evaluate.py --category bottle --checkpoint artifacts/checkpoints/reconstruction_bottle.pth --layer layer2
+
+# Evaluate PatchCore Baseline & Generate Side-by-Side Benchmark
+python scripts/evaluate_patchcore.py --category bottle --checkpoint artifacts/checkpoints/patchcore_bottle.pth
+```
+*Expected Output: `PatchCore: 100.0% Image AUROC, 97.97% Pixel AUROC | Reconstruction: 99.68% Image AUROC, 96.41% Pixel AUROC`*
+
+### Step 8: Start the Flask Application
 ```powershell
 python backend/app.py
 ```
-Open your web browser and navigate to:
-**`http://127.0.0.1:5000/`**
-
-The web interface will immediately perform a health poll against `GET /api/health` and display live system telemetry.
+Open **`http://127.0.0.1:5000/`** in your browser.
 
 ---
 
-## 6. MVTec AD Dataset Setup Guide (Planned for Phase 2)
+## 6. MVTec AD Dataset Setup Guide
 
-The **MVTec Anomaly Detection (MVTec AD)** benchmark is the de-facto standard for evaluating industrial visual inspection algorithms.
-
-### Official Source
+### Official Source & License
 - **Provider:** MVTec Software GmbH
 - **Portal:** [https://www.mvtec.com/company/research/datasets/mvtec-ad](https://www.mvtec.com/company/research/datasets/mvtec-ad)
-- **License:** Non-commercial, research & educational use.
+- **License:** [Creative Commons CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) (**Non-commercial research only**).
 
-### Expected Directory Layout
-```text
-data/
-└── mvtec_ad/
-    ├── bottle/
-    │   ├── ground_truth/
-    │   │   ├── broken_large/
-    │   │   ├── broken_small/
-    │   │   └── contamination/
-    │   ├── test/
-    │   │   ├── good/
-    │   │   ├── broken_large/
-    │   │   ├── broken_small/
-    │   │   └── contamination/
-    │   └── train/
-    │       └── good/
-    ├── cable/
-    ├── capsule/
-    ├── carpet/
-    ...
-```
-
-> **Storage Management Best Practice:**  
-> The full dataset comprises ~5 GB compressed and ~5 GB uncompressed across 15 categories. In Phase 2, the pipeline will offer a modular category loader starting with a single representative category (such as `bottle` or `carpet`), preventing local disk pressure while establishing end-to-end correctness.
+See [`docs/dataset_guide.md`](docs/dataset_guide.md) for step-by-step extraction instructions.
+See [`docs/evaluation_phase4.md`](docs/evaluation_phase4.md) for Phase 4 reconstruction benchmarks.
+See [`docs/patchcore_phase5.md`](docs/patchcore_phase5.md) for Phase 5 PatchCore comparative benchmarks.
 
 ---
 
@@ -184,16 +212,42 @@ data/
 | Phase | Milestone | Scope | Status |
 | :---: | :--- | :--- | :---: |
 | **01** | **Project Setup & Environment Verification** | Isolated venv, Flask app, Vanilla JS client, pytest suite, diagnostics | **Complete** |
-| **02** | **Dataset Pipeline & Category Ingestion** | PyTorch dataset loader, transforms, resolution standardization, ground-truth masks | *Pending Approval* |
-| **03** | **Feature Reconstruction Model** | ResNet-50 feature pyramid, spatial autoencoder, reconstruction loss | *Pending* |
-| **04** | **PatchCore Baseline & Heatmaps** | Patch-level memory bank, coreset subsampling, Gaussian anomaly maps | *Pending* |
-| **05** | **Evaluation & Quantitative Metrics** | Image ROC-AUC, Pixel PRO-AUC, precision-recall analysis, comparative report | *Pending* |
-| **06** | **Interactive Inspection Dashboard** | Image drag-and-drop, real-time inference, heatmap opacity slider, defect report | *Pending* |
+| **02** | **Dataset Pipeline & PyTorch Setup** | CPU PyTorch/torchvision, MVTec dataset loader, validator, synthetic tests, dataset guide | **Complete** |
+| **03** | **Feature Extraction & Reconstruction Model** | ResNet-50 intermediate extractor, spatial autoencoder, anomaly map generator, trainer | **Complete** |
+| **04** | **Real MVTec Data & First Genuine Evaluation** | Selective bottle download, real training, 83-image test evaluation, AUROC (99.7%), latency benchmark | **Complete** |
+| **05** | **PatchCore Comparison Baseline** | Multi-scale patch embeddings (`layer2`+`layer3`), greedy coreset (1%), dual-model benchmark (100% AUROC) | **Complete** |
+| **06** | **Interactive Inspection Dashboard** | Full-stack UI, live drag-and-drop, dual-model comparison, 60 FPS opacity slider, history | **Complete** |
 
 ---
 
-## 8. Engineering & Security Rules
+## 8. Interactive Dashboard & REST API Reference
 
-1. **Path Agility:** All file lookups utilize `pathlib.Path` relative to the project root, never machine-specific hardcoded paths.
-2. **Credential & Artifact Security:** The `.gitignore` strictly protects datasets (`data/`), model checkpoints (`*.pth`, `*.pt`), environment variables (`.env`), and cache artifacts from accidental version control commits.
-3. **Reproducibility:** Experiments in later phases will lock random seeds (`torch.manual_seed`, `np.random.seed`).
+The Phase 6 full-stack dashboard runs on `http://127.0.0.1:5000/` and provides:
+- **Live Inspection Workspace:** Drag-and-drop or file upload (PNG/JPEG/BMP up to 10 MB), one-click preset test samples (Pristine normal, Fracture, Rim chip, Contamination), model selector pills (`Reconstruction`, `PatchCore`, or `Compare Both`), decision threshold selector (`Unbiased Normal Training` default vs. `Test-Tuned Optimal` vs. `Custom`), and real-time interactive opacity slider (0% to 100% alpha blend).
+- **Dual-Model Comparative Panel:** Side-by-side inspection showing individual model anomaly scores, decision margins, latency, continuous Jet heatmaps, interactive overlays, and agreement reasoning (`CONCORDANT_DEFECT`, `CONCORDANT_NORMAL`, or `DISCORDANT`).
+- **Inspection History:** Bounded in-memory log of recent inspections with thumbnails, status pills, and one-click workspace reloading.
+- **Empirical Benchmarks Tab:** Live quantitative benchmark metrics table grounded in actual saved evaluation artifacts (`evaluation_summary.json` and `patchcore_summary.json`).
+
+### REST API Endpoints
+
+| Endpoint | Method | Description |
+| :--- | :---: | :--- |
+| `/api/health` | `GET` | Service status, Python runtime, platform metadata. |
+| `/api/models` | `GET` | Model readiness, layers, trainable parameters, calibrated decision thresholds. |
+| `/api/inspect` | `POST` | Execute anomaly inspection on uploaded `image` file or `sample_id` preset. Returns scores, thresholds, decisions, base64 heatmaps, and agreement. |
+| `/api/history` | `GET` | Return list of recent inspection summaries (up to `limit=50`). |
+| `/api/history/<id>` | `GET` | Retrieve detailed inspection record with full heatmaps by inspection ID. |
+| `/api/history` | `DELETE` | Clear in-memory inspection history. |
+| `/api/eval-summary` | `GET` | Return genuine empirical benchmark comparison metrics. |
+| `/api/samples` | `GET` | List available preset test samples with metadata and thumbnails. |
+| `/api/samples/<sample_id>` | `GET` | Retrieve preset sample image payload. |
+
+---
+
+## 9. Engineering & Security Rules
+
+1. **Path Agility:** All paths are resolved dynamically using `pathlib.Path` relative to the project root, or via `MVTEC_DATASET_ROOT`.
+2. **Exclusion Protection:** Datasets (`/data/`), model weights (`*.pth`), virtual environments (`.venv/`), and artifacts (`artifacts/*`) are strictly excluded from version control.
+3. **Reproducibility:** Experiments lock random seeds (`set_seed(42)`).
+4. **Scientific Integrity:** Anomaly scores represent reconstruction distances and are never claimed as calibrated probabilities without empirical validation thresholds.
+5. **No Automated Git Commits:** All Git commits remain under explicit developer control.

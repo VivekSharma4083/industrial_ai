@@ -1,12 +1,20 @@
+# Extra wheel index for CPU-only PyTorch builds
+--extra-index-url https://download.pytorch.org/whl/cpu
+
 # Core Web Framework
 Flask>=3.0.0,<3.1.0
 
-# Image Processing (Initial lightweight setup)
+# Image Processing & Utilities
 Pillow>=10.3.0,<11.0.0
+
+# Machine Learning & Numerical Computing (Phase 2 CPU Target)
+torch==2.14.1+cpu
+torchvision==0.29.1+cpu
+numpy>=2.0.0,<3.0.0
+
+# Evaluation & Metrics
+scikit-learn>=1.4.0
+scipy>=1.12.0
 
 # Testing
 pytest>=8.0.0,<9.0.0
-
-# Note on Machine Learning Dependencies:
-# PyTorch, torchvision, NumPy, scikit-learn, and scipy will be introduced in subsequent phases
-# tailored specifically to verified target hardware (CPU vs CUDA) to conserve disk space and bandwidth.
